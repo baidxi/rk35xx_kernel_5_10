@@ -1,0 +1,41 @@
+警告：chroot 不能在WSL下执行
+
+1.下载镜像
+wget http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.1-base-arm64.tar.gz
+
+2.解压
+tar -xvf ubuntu-base-20.04.1-base-arm64.tar.gz -C ./rootfs-ubuntu
+
+3.准备网络环境
+sudo cp -b /etc/resolv.conf ./rootfs-ubuntu/etc/resolv.conf
+
+4.准备qemu环境
+sudo cp /usr/bin/qemu-aarch64-static ./rootfs-ubuntu/usr/bin/
+
+5.进入chroot环境
+sudo chroot ./rootfs-ubuntu
+
+6.更换源，安装你想要的工具
+.....
+apt install network-manager vim git ssh iw usbutils
+
+7.创建镜像
+dd if=/dev/zero of=rootfs-ubuntu.img  bs=1M count=3000
+
+8.格式化镜像
+sudo mkfs.ext4 -F -L linuxroot rootfs-ubuntu.img
+
+9.拷贝文件到镜像
+sudo mkdir temp
+sudo mount rootfs-ubuntu.img temp
+sudo cp -rfp ./rootfs-ubuntu/* temp/
+
+10.卸载
+sudo umount temp
+
+11.压缩
+sudo resize2fs -M rootfs-ubuntu.img
+
+
+12.反压缩
+sudo resize2fs /dev/mmc2blkp3

@@ -1,0 +1,31 @@
+1.扫描SSID
+# sudo iw dev wlp0s20f3 scan
+ 
+找到SSID：test
+ 
+2.配置连接wifi
+# wpa_passphrase test 12345678 >> /etc/wpa_supplicant.conf
+注释：
+SSID：test
+密码：12345678
+passord保存文件：/etc/wpa_supplicant.conf
+ 
+//查看
+# cat /etc/wpa_supplicant.conf
+network={
+	ssid="test"
+	#psk="12345678"
+	psk=11fbec22c8d21dd5e270c5942c75835e54cfc746230d9f0bc765a63372c51b5b
+}
+ 
+3.连接wifi设备
+# wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf
+ 
+4.查看连接转状态
+# iw wlan0 link
+ 
+5.为wlan0获取ip地址
+# sudo dhclient wlan0
+ 
+ 
+ 

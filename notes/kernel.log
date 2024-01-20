@@ -1,0 +1,15 @@
+
+查看内核log
+grep mmc /dev/kmsg
+
+
+
+
+
+查看MMC log
+
+grep . /sys/bus/sdio/devices/mmc*/*
+
+grep . /sys/bus/usb/devices/usb*/*
+
+

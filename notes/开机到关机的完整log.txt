@@ -1,0 +1,222 @@
+Ubuntu 20.04 LTS GNU/Linux lubancat ttyFIQ0
+
+[username:password] root:root cat:temppwd
+
+Modify information : /etc/issue
+
+lubancat login: [   10.362210] Config b/1 of rockchip needs at least one function.
+[   10.362259] configfs-gadget fcc00000.dwc3: failed to start rockchip: -22
+cat
+Password:
+
+
+           OO                            OO
+           OOOO                        OOOO
+           OOOOO                     OOOOOO
+           OOOOOOO                 .OOOOOOO
+           OOOOOOOOO              OOOOOOOOO
+           OOOOOOOOOOO          OOOOOOOOOOO
+           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+           OOOOO\    OOOOOOOOOOOO    /OOOOO
+           OOOOOOOOO    OOOOOO     OOOOOOOO
+           OOOOO/    OOOOOOOOOOOOO   \OOOOO
+           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+           OOOOOOOOOOOOOO\￣/OOOOOOOOOOOOOO
+           OOOOOOOOOOOOOOO\/OOOOOOOOOOOOOOO
+           OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+  _            _                     ____        _
+ | |    _   _ | |__    ____  _____  / ___| ____ | |_
+ | |   | | | || '_ \  / _  ||  _  || |    / _  || __|
+ | |___| |_| || |_) || (_| || | | || |___| (_| || |_
+ |_____|\__._||_.__/  \__'_||_| |_| \____|\__'_| \__|
+
+
+Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 4.19.232 aarch64)
+
+ * Documentation:  http://doc.embedfire.com
+ * Management:     http://www.embedfire.com
+
+System information as of Mon Jan  8 22:49:39 CST 2024
+
+System load:   0.90 0.20 0.06   Up time:       0 min            Local users:   2
+Memory usage:  8 % of 3760MB    IP:
+CPU temp:      33°C             GPU temp:      33°C
+Usage of /:    16% of 29G       Battery:       2% discharging
+
+Last login: Mon Jan  8 22:49:34 CST 2024 on tty1
+cat@lubancat:~$ sudo -i
+root@lubancat:~# echo "7 7 7 7"> /proc/sys/kernel/printk
+root@lubancat:~# cat /proc/sys/kernel/printk
+7       7       7       7
+         Stopping Session c1 of user cat.
+         Stopping Session c2 of user cat.
+         Stopping Session c3 of user cat.
+[  OK  ] Removed slice system-modprobe.slice.
+[  OK  ] Stopped target Graphical Interface.
+[  OK  ] Stopped target Multi-User System.
+[  OK  ] Stopped target Login Prompts.
+[  OK  ] Stopped target Sound Card.
+[  OK  ] Stopped target System Time Set.
+[   36.395052] ttyFIQ ttyFIQ0: tty_port_close_start: tty->count = 1 port count = 2
+[  OK  ] Stopped target Timers.
+[  OK  ] Stopped Trigger anacron every hour.
+[  OK  ] Stopped Daily apt upgrade and clean activities.
+[  OK  ] Stopped Daily apt download activities.
+[  OK  ] Stopped Periodic ext4 Onli…ata Check for All Filesystems.
+[  OK  ] Stopped Discard unused blocks once a week.
+[  OK  ] Stopped Refresh fwupd metadata regularly.
+[  OK  ] Stopped Daily rotation of log files.
+[  OK  ] Stopped Daily man-db regeneration.
+[  OK  ] Stopped Message of the Day.
+[  OK  ] Stopped Daily Cleanup of Temporary Directories.
+[  OK  ] Closed Load/Save RF Kill Switch Status /dev/rfkill Watch.
+         Stopping Modem Manager...
+         Stopping Accounts Service...
+         Stopping Save/Restore Sound Card State...
+         Stopping LSB: automatic crash report generation...
+         Stopping Manage, Install and Generate Color Profiles...
+         Stopping Regular background program processing daemon...
+         Stopping Make remote CUPS printers available locally...
+         Stopping Getty on tty1...
+         Stopping Tool to automatic…mit kernel crash signatures...
+         Stopping Light Display Manager...
+         Stopping Dispatcher daemon for systemd-networkd...
+         Stopping Network Time Service...
+         Stopping System Logging Service...
+         Stopping RealtimeKit Scheduling Policy Service...
+         Stopping Serial Getty on ttyFIQ0...
+[  OK  ] Stopped Wait until snapd is fully seeded.
+         Stopping OpenBSD Secure Shell server...
+         Stopping Hostname Service...
+         Stopping Load/Save Random Seed...
+         Stopping Time & Date Service...
+         Stopping triggerhappy global hotkey daemon...
+         Stopping Disk Manager...
+         Stopping Daemon for power management...
+         Stopping vsftpd FTP server...
+[  OK  ] Stopped Accounts Service.
+[  OK  ] Stopped Regular background program processing daemon.
+[  OK  ] Stopped Dispatcher daemon for systemd-networkd.
+[  OK  ] Stopped System Logging Service.
+[  OK  ] Stopped Hostname Service.
+[  OK  ] Stopped Network Time Service.
+[  OK  ] Stopped OpenBSD Secure Shell server.
+[  OK  ] Stopped vsftpd FTP server.
+[  OK  ] Stopped Serial Getty on ttyFIQ0.
+[   36.612205] ttyFIQ ttyFIQ0: tty_port_close_start: tty->count = 1 port count = 2
+[  OK  ] Stopped Getty on tty1.
+[  OK  ] Stopped triggerhappy global hotkey daemon.
+[  OK  ] Stopped Time & Date Service.
+[  OK  ] Stopped Modem Manager.
+[  OK  ] Stopped RealtimeKit Scheduling Policy Service.
+[  OK  ] Stopped Daemon for power management.
+[  OK  ] Stopped Manage, Install and Generate Color Profiles.
+[  OK  ] Stopped Disk Manager.
+[  OK  ] Stopped Save/Restore Sound Card State.
+[  OK  ] Stopped Load/Save Random Seed.
+[  OK  ] Stopped Tool to automatica…ubmit kernel crash signatures.
+[  OK  ] Stopped Session c3 of user cat.
+[  OK  ] Stopped Session c1 of user cat.
+[  OK  ] Removed slice system-getty.slice.
+[  OK  ] Removed slice system-serial\x2dgetty.slice.
+[  OK  ] Stopped target Login Prompts (Pre).
+[  OK  ] Stopped target Host and Network Name Lookups.
+         Stopping Authorization Manager...
+         Stopping Switcheroo Control Proxy service...
+[  OK  ] Stopped Authorization Manager.
+[  OK  ] Stopped Switcheroo Control Proxy service.
+[  OK  ] Stopped Make remote CUPS printers available locally.
+[  OK  ] Stopped LSB: automatic crash report generation.
+         Stopping Avahi mDNS/DNS-SD Stack...
+         Stopping CUPS Scheduler...
+[  OK  ] Stopped Avahi mDNS/DNS-SD Stack.
+[  OK  ] Stopped Session c2 of user cat.
+         Stopping Login Service...
+         Stopping User Manager for UID 1000...
+[  OK  ] Stopped Light Display Manager.
+[  OK  ] Stopped CUPS Scheduler.
+[  OK  ] Stopped User Manager for UID 1000.
+         Stopping User Runtime Directory /run/user/1000...
+[  OK  ] Stopped Login Service.
+[  OK  ] Unmounted /run/user/1000.
+[  OK  ] Stopped User Runtime Directory /run/user/1000.
+[  OK  ] Removed slice User Slice of UID 1000.
+         Stopping Permit User Sessions...
+[  OK  ] Stopped Permit User Sessions.
+[  OK  ] Stopped target Network.
+[  OK  ] Stopped target User and Group Name Lookups.
+[  OK  ] Stopped target Remote File Systems.
+         Stopping Network Manager...
+         Stopping Raise network interfaces...
+         Stopping Network Name Resolution...
+         Stopping WPA supplicant...
+[  OK  ] Stopped Network Name Resolution.
+[  OK  ] Stopped Raise network interfaces.
+[  OK  ] Stopped Network Manager.
+[  OK  ] Stopped WPA supplicant.
+         Stopping D-Bus System Message Bus...
+[  OK  ] Stopped D-Bus System Message Bus.
+[  OK  ] Stopped target Basic System.
+[  OK  ] Stopped target Paths.
+[  OK  ] Stopped ACPI Events Check.
+[  OK  ] Stopped CUPS Scheduler.
+[  OK  ] Stopped target Slices.
+[  OK  ] Removed slice User and Session Slice.
+[  OK  ] Stopped target Sockets.
+[  OK  ] Closed ACPID Listen Socket.
+[  OK  ] Closed Avahi mDNS/DNS-SD Stack Activation Socket.
+[  OK  ] Closed CUPS Scheduler.
+[  OK  ] Closed D-Bus System Message Bus Socket.
+[  OK  ] Closed Socket activation for snappy daemon.
+[  OK  ] Closed Syslog Socket.
+[  OK  ] Closed triggerhappy.socket.
+[  OK  ] Stopped target System Initialization.
+[  OK  ] Stopped target Local Encrypted Volumes.
+[  OK  ] Stopped Dispatch Password …ts to Console Directory Watch.
+[  OK  ] Stopped Forward Password R…uests to Wall Directory Watch.
+         Stopping Load/Save Screen …ness of backlight:backlight...
+         Stopping Load/Save Screen …ess of backlight:backlight1...
+[  OK  ] Stopped Apply Kernel Variables.
+[  OK  ] Stopped Load Kernel Modules.
+         Stopping Update UTMP about System Boot/Shutdown...
+[  OK  ] Stopped Load/Save Screen B…htness of backlight:backlight.
+[  OK  ] Stopped Load/Save Screen B…tness of backlight:backlight1.
+[  OK  ] Removed slice system-systemd\x2dbacklight.slice.
+[  OK  ] Stopped Update UTMP about System Boot/Shutdown.
+[  OK  ] Stopped Create Volatile Files and Directories.
+[  OK  ] Stopped target Local File Systems.
+[  OK  ] Stopped target Mounted snaps.
+[  OK  ] Stopped target Mounting snaps.
+         Unmounting /boot...
+         Unmounting /tmp...
+[  OK  ] Unmounted /boot.
+[  OK  ] Unmounted /tmp.
+[  OK  ] Stopped target Swap.
+[  OK  ] Reached target Unmount All Filesystems.
+[  OK  ] Stopped File System Check on /dev/disk/by-partlabel/boot.
+[  OK  ] Removed slice system-systemd\x2dfsck.slice.
+[  OK  ] Stopped target Local File Systems (Pre).
+[  OK  ] Stopped Create Static Device Nodes in /dev.
+[  OK  ] Stopped Create System Users.
+[  OK  ] Stopped Remount Root and Kernel File Systems.
+[  OK  ] Reached target Shutdown.
+[  OK  ] Reached target Final Step.
+[  OK  ] Finished Power-Off.
+[  OK  ] Reached target Power-Off.
+[   37.920675] systemd-journald[210]: Received SIGTERM from PID 1 (systemd-shutdow).
+[   38.043172] EXT4-fs (mmcblk2p3): re-mounted. Opts: (null)
+[   38.396672] cpu cpu0: min=816000, max=816000
+[   38.403000] rk808 0-0020: reboot: not restore POWER_EN
+[   38.421657] rockchip-vop2 fe040000.vop: [drm:vop2_crtc_atomic_disable] Crtc atomic disable vp1
+[   38.435805] mpp_rkvdec2 fdf80200.rkvdec: shutdown device
+[   38.436299] mpp_rkvenc fdf40000.rkvenc: shutdown device
+[   38.436764] mpp_rkvenc fdf40000.rkvenc: shutdown success
+[   38.448092] fan53555-regulator 0-0040: fan53555..... reset
+[   38.449555] fan53555-regulator 0-0040: reset: force fan53555_reset ok!
+[   38.450495] mpp_jpgdec fded0000.jpegd: shutdown device
+[   38.450997] mpp-iep2 fdef0000.iep: shutdown device
+[   38.451438] mpp_vepu2 fdee0000.vepu: shutdown device
+[   38.451896] mpp_vdpu2 fdea0400.vdpu: shutdown device
+[   38.453979] rk808 0-0020: disabled int when device shutdown!
+[   38.457831] reboot: Power down
