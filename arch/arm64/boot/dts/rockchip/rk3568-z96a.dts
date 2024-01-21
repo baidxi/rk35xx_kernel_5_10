@@ -13,6 +13,7 @@
 #include <dt-bindings/display/media-bus-format.h>
 #include <dt-bindings/display/rockchip_vop.h>
 #include <dt-bindings/sensor-dev.h>
+#include <dt-bindings/usb/pd.h>
 #include "rk3568.dtsi"
 #include "rk3568-linux.dtsi"
 
@@ -324,13 +325,6 @@
 		pinctrl-0 = <&hp_det>;
 	};
 
-	dc_det: dc-det {
-		compatible = "dc_det";
-		dc_det_gpio = <&gpio3 RK_PA5 GPIO_ACTIVE_HIGH>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&dc_det_gpio_pin>;
-	};
-
 	hall_mh248: hall-mh248 {
 		compatible = "hall-mh248";
 		status = "okay";
@@ -497,33 +491,55 @@
 &i2c0 {
 	status = "okay";
 
-	fusb0: fusb30x@22 {
-		compatible = "fairchild,fusb302";
-		reg = <0x22>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&fusb0_int>;
-		vbus-supply = <&vcc5v0_otg>;
-		int-n-gpios = <&gpio0 RK_PD5 GPIO_ACTIVE_HIGH>;
-		status = "okay";
-	};
-
 	husb0: husb311@4e {
 		compatible = "hynetek,husb311";
 		reg = <0x4e>;
-		interrupt-parent = <&gpio0>;
-		interrupts = <RK_PD5 IRQ_TYPE_LEVEL_LOW>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&fusb0_int>;
 		vbus-supply = <&vcc5v0_otg>;
+		interrupt-parent = <&gpio0>;
+		interrupts = <RK_PD5 IRQ_TYPE_LEVEL_LOW>;
 		status = "okay";
 
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0>;
+				usbc0_role_switch:endpoint@0 {
+					reg = <0>;
+					remote-endpoint = <&dwc3_role_switch>;
+				};
+			};
+		};
+
 		usb_con: connector {
-			data-role = "dual";
+			compatible = "usb-c-connector";
+			label = "USB-C";
 			power-role = "dual";
-			try-power-role = "source";
-			source-pdos = <0x040190c8>;
-			sink-pdos = <0x040190c8>;
+			try-power-role = "sink";
+			data-role = "dual";
+			pd-revision = <0x200>;
+			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
+			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
+				     	 PDO_VAR(5000, 12000, 1000)
+				     	 PDO_PPS_APDO(5000, 12000, 3000)>;
 			op-sink-microwatt = <10000000>;
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				port@0 {
+					reg = <0>;
+					usb_ss_con:endpoint {
+						remote-endpoint = <&dwc3_drd_phy>;
+					};
+				};
+			};
 		};
 	};
 
@@ -779,6 +795,24 @@
 			};
 		};
 
+		charger {
+			compatible = "rk817,charger";
+			min_input_voltage = <12000>;
+			max_input_current = <3000>;
+			max_chrg_current = <2000>;
+			max_chrg_voltage = <8400>;
+			chrg_term_mode = <0>;
+			chrg_finish_cur = <300>;
+			virtual_power = <0>;
+			dc_det_adc = <0>;
+			extcon = <&usb2phy0>;
+			otg_switch-supply = <&otg_switch>;
+			dc_det_gpio = <&gpio3 RK_PC0 GPIO_ACTIVE_LOW>;
+			//charger-done-gpios = <&gpio3 RK_PC4 GPIO_ACTIVE_HIGH>;
+			pinctrl-0 = <&dc_det_gpio_pin>;
+			gate_function_disable = <1>;
+		};
+
 		battery {
 			compatible = "rk817,battery";
 			ocv_table = <6600 6840 6922 7000 7064 7122 7162
@@ -797,18 +831,20 @@
 			monitor_sec = <5>;
 			sample_res = <10>;
 			// Permit boot without battery
-			virtual_power = <1>;
+			virtual_power = <0>;
 
 			bat_res_up = <110>;
 			bat_res_down = <27>;
 			bat_res_up_old = <232>;
 			bat_res_down_old = <50>;
 			design_max_voltage = <8350>;
-			charging-gpios = <&gpio3 RK_PC0 GPIO_ACTIVE_HIGH>;
-			charger-done-gpios = <&gpio3 RK_PC4 GPIO_ACTIVE_HIGH>;
+			//charging-gpios = <&gpio3 RK_PC0 GPIO_ACTIVE_HIGH>;
+			//charger-done-gpios = <&gpio3 RK_PC4 GPIO_ACTIVE_HIGH>;
 			io-channels = <&saradc 1>;
-			io-channel-names = "capacity-chan-1";
-			battery-use-adc;
+			io-channel-names = "battery-voltage";
+			adc_vol_ratio = <4900>;
+			adc_ref_vol = <1800>;
+			adc_res = <1024>;
 		};
 
 		rk817_codec: codec {
@@ -893,105 +929,6 @@
 		nand-ecc-strength = <16>;
 		nand-ecc-step-size = <1024>;
 	};
-};
-
-&pinctrl {
-
-	headphone {
-		hp_det: hp-det {
-			rockchip,pins = <3 RK_PB2 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-	};
-
-	pmic {
-		pmic_int: pmic_int {
-			rockchip,pins =
-				<0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-
-		soc_slppin_gpio: soc_slppin_gpio {
-			rockchip,pins =
-				<0 RK_PA2 RK_FUNC_GPIO &pcfg_output_low_pull_down>;
-		};
-
-		soc_slppin_slp: soc_slppin_slp {
-			rockchip,pins =
-				<0 RK_PA2 1 &pcfg_pull_up>;
-		};
-
-		soc_slppin_rst: soc_slppin_rst {
-			rockchip,pins =
-				<0 RK_PA2 2 &pcfg_pull_none>;
-		};
-	};
-
-	sdio-pwrseq {
-		wifi_enable_h: wifi-enable-h {
-			rockchip,pins =
-				<0 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>,
-				<0 RK_PC5 RK_FUNC_GPIO &pcfg_output_high>;
-		};
-	};
-
-	usb {
-		vcc5v0_host_en: vcc5v0-host-en {
-			rockchip,pins = <3 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-
-		vcc5v0_otg_pwr_en: vcc5v0-otg-pwr-en {
-			rockchip,pins = <3 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-
-		vcc5v0_otg_en: vcc5v0-otg-en {
-			rockchip,pins = <2 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-	};
-
-	wireless-wlan {
-		wifi_host_wake_irq: wifi-host-wake-irq {
-			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_down>;
-		};
-	};
-
-	wireless-bluetooth {
-		uart8_gpios: uart8-gpios {
-			rockchip,pins = <2 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-
-		uart1_gpios: uart1-gpios {
-			rockchip,pins = <2 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-	};
-
-	fusb30x {
-		fusb0_int: fusb0-int {
-			rockchip,pins = <0 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-	};
-
-	power_dc: power-dc {
-		dc_det_gpio_pin: dc-det-gpio-pin {
-			rockchip,pins = <3 RK_PA5 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-	};
-
-	hallsensor {
-		mh_248: mh-248 {
-			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-	};
-};
-
-&pmu_io_domains {
-	status = "okay";
-	pmuio1-supply = <&vcc3v3_pmu>;
-	pmuio2-supply = <&vcca1v8_pmu>;
-	vccio1-supply = <&vccio_acodec>;
-	vccio3-supply = <&vccio_sd>;
-	vccio4-supply = <&vcca1v8_pmu>;
-	vccio5-supply = <&vcc_3v3>;
-	vccio6-supply = <&vcc1v8_dvp>;
-	vccio7-supply = <&vcc_3v3>;
 };
 
 &pwm10 {
@@ -1134,7 +1071,6 @@
 };
 
 &u2phy0_otg {
-	vbus-supply = <&vcc5v0_otg>;
 	status = "okay";
 };
 
@@ -1150,8 +1086,6 @@
 
 &usb2phy0 {
 	status = "okay";
-	extcon = <&fusb0 &husb0>;
-	extcon_num = <2>;
 };
 
 &usb2phy1 {
@@ -1176,13 +1110,28 @@
 
 &usbdrd_dwc3 {
 	status = "okay";
-	quirk-skip-phy-init;
-	extcon = <&fusb0 &husb0>;
-	extcon_num = <2>;
+	usb-role-switch;
+	dr_mode = "otg";
+	port {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		dwc3_role_switch:endpoint@0 {
+			reg = <0>;
+			remote-endpoint = <&usbc0_role_switch>;
+		};
+	};
 };
 
 &usbdrd30 {
 	status = "okay";
+	port {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		dwc3_drd_phy:endpoint@0 {
+			reg = <0>;
+			remote-endpoint = <&usb_ss_con>;
+		};
+	};
 };
 
 &usbhost_dwc3 {
@@ -1275,6 +1224,7 @@
 	pinctrl-0 = <&uart1m0_xfer &uart1m0_ctsn>;
 };
 
+/*
 &mdio1 {
 	rgmii_phy0: phy@0 {
 		compatible = "ethernet-phy-id001c.c942", "ethernet-phy-ieee802.3-c22";
@@ -1293,3 +1243,105 @@
 		reg = <3>;
 	};
 };
+*/
+
+&pinctrl {
+
+	headphone {
+		hp_det: hp-det {
+			rockchip,pins = <3 RK_PB2 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	pmic {
+		pmic_int: pmic_int {
+			rockchip,pins =
+				<0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		soc_slppin_gpio: soc_slppin_gpio {
+			rockchip,pins =
+				<0 RK_PA2 RK_FUNC_GPIO &pcfg_output_low_pull_down>;
+		};
+
+		soc_slppin_slp: soc_slppin_slp {
+			rockchip,pins =
+				<0 RK_PA2 1 &pcfg_pull_up>;
+		};
+
+		soc_slppin_rst: soc_slppin_rst {
+			rockchip,pins =
+				<0 RK_PA2 2 &pcfg_pull_none>;
+		};
+	};
+
+	sdio-pwrseq {
+		wifi_enable_h: wifi-enable-h {
+			rockchip,pins =
+				<0 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>,
+				<0 RK_PC5 RK_FUNC_GPIO &pcfg_output_high>;
+		};
+	};
+
+	usb {
+		vcc5v0_host_en: vcc5v0-host-en {
+			rockchip,pins = <3 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		vcc5v0_otg_pwr_en: vcc5v0-otg-pwr-en {
+			rockchip,pins = <3 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		vcc5v0_otg_en: vcc5v0-otg-en {
+			rockchip,pins = <2 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	wireless-wlan {
+		wifi_host_wake_irq: wifi-host-wake-irq {
+			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+
+	wireless-bluetooth {
+		uart8_gpios: uart8-gpios {
+			rockchip,pins = <2 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		uart1_gpios: uart1-gpios {
+			rockchip,pins = <2 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	fusb30x {
+		fusb0_int: fusb0-int {
+			rockchip,pins = <0 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	power_dc: power-dc {
+		dc_det_gpio_pin: dc-det-gpio-pin {
+			rockchip,pins = <3 RK_PA5 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	hallsensor {
+		mh_248: mh-248 {
+			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+};
+
+&pmu_io_domains {
+	status = "okay";
+	pmuio1-supply = <&vcc3v3_pmu>;
+	pmuio2-supply = <&vcca1v8_pmu>;
+	vccio1-supply = <&vccio_acodec>;
+	vccio3-supply = <&vccio_sd>;
+	vccio4-supply = <&vcca1v8_pmu>;
+	vccio5-supply = <&vcc_3v3>;
+	vccio6-supply = <&vcc1v8_dvp>;
+	vccio7-supply = <&vcc_3v3>;
+};
+
+
