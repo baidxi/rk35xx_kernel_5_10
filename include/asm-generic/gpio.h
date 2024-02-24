@@ -97,6 +97,7 @@ static inline int __gpio_get_value(unsigned gpio)
 {
 	return gpiod_get_raw_value(gpio_to_desc(gpio));
 }
+
 static inline void __gpio_set_value(unsigned gpio, int value)
 {
 	return gpiod_set_raw_value(gpio_to_desc(gpio), value);
@@ -123,6 +124,12 @@ extern void gpio_free_array(const struct gpio *array, size_t num);
 static inline int gpio_export(unsigned gpio, bool direction_may_change)
 {
 	return gpiod_export(gpio_to_desc(gpio), direction_may_change);
+}
+
+int __gpiod_export(struct gpio_desc *desc, bool direction_may_change, const char *name);
+static inline int gpio_export_with_name(unsigned gpio, bool direction_may_change, const char *name)
+{
+	return __gpiod_export(gpio_to_desc(gpio), direction_may_change, name);
 }
 
 static inline int gpio_export_link(struct device *dev, const char *name,

@@ -556,6 +556,94 @@ static struct class gpio_class = {
 	.class_groups = gpio_class_groups,
 };
 
+int __gpiod_export(struct gpio_desc *desc, bool direction_may_change, const char *name)
+{
+	struct gpio_chip *chip;
+	struct gpio_device *gdev;
+	struct gpiod_data *data;
+	unsigned long flags;
+	int status;
+	const char *ioname = NULL;
+	struct device *dev;
+	int offset;
+
+	if (!gpio_class.p) {
+		pr_debug("%s: called too early!\n", __func__);
+		return -ENOENT;
+	}
+
+	if (!desc) {
+		pr_debug("%s: invalid gpio description\n", __func__);
+		return -EINVAL;
+	}
+
+	gdev = desc->gdev;
+	chip = gdev->chip;
+
+	mutex_lock(&sysfs_lock);
+
+	if (!chip || !gdev->mockdev) {
+		status = -ENODEV;
+		goto err_unlock;
+	}
+
+	spin_lock_irqsave(&gpio_lock, flags);
+	if (!test_bit(FLAG_REQUESTED, &desc->flags)) {
+		spin_unlock_irqrestore(&gpio_lock, flags);
+		gpiod_dbg(desc, "%s: unavailable (request = %d, exported = %d)\n",
+		__func__,
+		test_bit(FLAG_REQUESTED, &desc->flags),
+		test_bit(FLAG_EXPORT, &desc->flags));
+		status = -EPERM;
+		goto err_unlock;
+	}
+
+	spin_unlock_irqrestore(&gpio_lock, flags);
+
+	data = kzalloc(sizeof(*data), GFP_KERNEL);
+	if (!data) {
+		status = -ENOMEM;
+		goto err_unlock;
+	}
+
+	data->desc = desc;
+	mutex_init(&data->mutex);
+	if (chip->direction_input && chip->direction_output)
+		data->direction_can_change = direction_may_change;
+	else
+		data->direction_can_change = false;
+
+	offset = gpio_chip_hwgpio(desc);
+	if (chip->names && chip->names[offset])
+		ioname = chip->names[offset];
+	if (name)
+		ioname = name;
+
+	dev = device_create_with_groups(&gpio_class, &gdev->dev, MKDEV(0, 0),
+									data, 
+									gpio_groups,
+									ioname ? ioname : "gpio%u",
+									desc_to_gpio(desc));
+	
+	if (IS_ERR(dev)) {
+		status = PTR_ERR(dev);
+		goto err_free_data;
+	}
+
+	set_bit(FLAG_EXPORT, &desc->flags);
+	mutex_unlock(&sysfs_lock);
+
+	return 0;
+
+err_free_data:
+	kfree(data);
+err_unlock:
+	mutex_unlock(&sysfs_lock);
+	gpiod_dbg(desc, "%s: status %d\n", __func__, status);
+	return status;
+}
+
+EXPORT_SYMBOL_GPL(__gpiod_export);
 
 /**
  * gpiod_export - export a GPIO through sysfs
