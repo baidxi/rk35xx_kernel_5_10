@@ -60,6 +60,8 @@
 	backlight: backlight {
 		compatible = "pwm-backlight";
 		pwms = <&pwm10 0 25000 0>;
+		enable-gpios = <&gpio3 RK_PA3 GPIO_ACTIVE_HIGH>;
+		pinctrl-0 = <&backlight_en>;
 		brightness-levels = <
 			  0  20  20  21  21  22  22  23
 			 23  24  24  25  25  26  26  27
@@ -341,15 +343,14 @@
 		#clock-cells = <0>;
 	};
 
-	edp_panel: edp-panel {
+	edp-panel {
 		compatible = "simple-panel";
 		status = "okay";
 		power-supply = <&vcc3v3_lcd0_n>;
 		backlight = <&backlight>;
-		enable-gpios = <&gpio3 RK_PA3 GPIO_ACTIVE_HIGH>;
 		bus-format = <MEDIA_BUS_FMT_RGB888_1X24>;
 		bpc = <8>;
-
+	/*	
 		width-mm = <309>;
 		height-mm = <173>;
 		prepare-delay-ms = <20>;
@@ -377,7 +378,7 @@
 				pixelclk-active = <0>;
 			};
 		};
-
+	*/
 		ports {
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -1328,6 +1329,12 @@
 	hallsensor {
 		mh_248: mh-248 {
 			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	backlight {
+		backlight_en:backligh-en {
+			rockchip,pins = <3 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 };
