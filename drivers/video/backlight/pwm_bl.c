@@ -473,6 +473,7 @@ static int pwm_backlight_probe(struct platform_device *pdev)
 	struct pwm_bl_data *pb;
 	struct pwm_state state;
 	unsigned int i;
+	unsigned long flag;
 	int ret;
 
 	if (!data) {
@@ -506,8 +507,12 @@ static int pwm_backlight_probe(struct platform_device *pdev)
 	pb->post_pwm_on_delay = data->post_pwm_on_delay;
 	pb->pwm_off_delay = data->pwm_off_delay;
 
-	pb->enable_gpio = devm_gpiod_get_optional(&pdev->dev, "enable",
-						  GPIOD_ASIS);
+	if (of_property_read_bool(pdev->dev.of_node, "default-on"))
+		flag = GPIOD_OUT_HIGH;
+	else
+		flag = GPIOD_ASIS;
+
+	pb->enable_gpio = devm_gpiod_get_optional(&pdev->dev, "enable", flag);
 	if (IS_ERR(pb->enable_gpio)) {
 		ret = PTR_ERR(pb->enable_gpio);
 		goto err_alloc;

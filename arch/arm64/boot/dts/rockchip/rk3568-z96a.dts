@@ -62,6 +62,7 @@
 		pwms = <&pwm10 0 25000 0>;
 		enable-gpios = <&gpio3 RK_PA3 GPIO_ACTIVE_HIGH>;
 		pinctrl-0 = <&backlight_en>;
+		default-on;
 		brightness-levels = <
 			  0  20  20  21  21  22  22  23
 			 23  24  24  25  25  26  26  27
@@ -492,9 +493,9 @@
 &i2c0 {
 	status = "okay";
 
-	husb0: husb311@4e {
-		compatible = "hynetek,husb311";
-		reg = <0x4e>;
+	fusb0: fusb302@22 {
+		compatible = "fcs,fusb302";
+		reg = <0x22>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&fusb0_int>;
 		vbus-supply = <&vcc5v0_otg>;
